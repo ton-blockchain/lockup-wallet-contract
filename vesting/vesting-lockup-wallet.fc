@@ -28,7 +28,7 @@ slice get_address_from_config(int config_id) inline_ref {
     var (subwallet_id, valid_until, msg_seqno) = (cs~load_uint(32), cs~load_uint(32), cs~load_uint(32));
     throw_if(35, valid_until <= now());
     var ds = get_data().begin_parse();
-    var (stored_seqno, stored_subwallet, public_key, lockup_until, allow_elector) = (ds~load_uint(32), ds~load_uint(32), ds~load_uint(256), ds~load_uint(64), ds~load_uint(1));
+    var (stored_seqno, stored_subwallet, public_key, create_at, duration, period, total_amount, allow_elector) = (ds~load_uint(32), ds~load_uint(32), ds~load_uint(256), ds~load_uint(64), ds~load_uint(32), ds~load_uint(32), ds~load_coins(), ds~load_uint(1));
     ds.end_parse();
     throw_unless(33, msg_seqno == stored_seqno);
     throw_unless(34, subwallet_id == stored_subwallet);
@@ -51,17 +51,26 @@ slice get_address_from_config(int config_id) inline_ref {
         return ();
     }
 
-    if ((now() < lockup_until) & ((~ allow_elector) | (~ (equal_slices(destination_address, get_address_from_config(0)) | equal_slices(destination_address, get_address_from_config(1)))))) {
-        return ();
+    int locked_amount = total_amount - total_amount * ((now() - create_at) / period) / (duration / period);
+
+    if (allow_elector & (equal_slices(destination_address, get_address_from_config(0)) | equal_slices(destination_address, get_address_from_config(1)))) {
+        locked_amount = 0;
     }
 
-    send_raw_message(msg, mode);
+    if (locked_amount > 0) {
+        raw_reserve(locked_amount, 2); ;; mode 2 - at most `amount` nanotons. Bit +2 in y means that the external action does not fail if the specified amount cannot be reserved; instead, all remaining balance is reserved
+    }
+
+    send_raw_message(cs~load_ref(), mode);
 
     set_data(begin_cell()
             .store_uint(stored_seqno + 1, 32)
             .store_uint(stored_subwallet, 32)
             .store_uint(public_key, 256)
-            .store_uint(lockup_until, 64)
+            .store_uint(create_at, 64)
+            .store_uint(duration, 32)
+            .store_uint(period, 32)
+            .store_coins(total_amount)
             .store_uint(allow_elector, 1)
             .end_cell());
 }
@@ -78,8 +87,14 @@ int get_public_key() method_id {
     return cs.preload_uint(256);
 }
 
-(int, int) get_lockup_data() method_id {
+int get_locked_amount(int now_time) method_id {
     var ds = get_data().begin_parse();
-    var (stored_seqno, stored_subwallet, public_key, lockup_until, allow_elector) = (ds~load_uint(32), ds~load_uint(32), ds~load_uint(256), ds~load_uint(64), ds~load_uint(1));
-    return (lockup_until, allow_elector);
+    var (stored_seqno, stored_subwallet, public_key, create_at, duration, period, total_amount, allow_elector) = (ds~load_uint(32), ds~load_uint(32), ds~load_uint(256), ds~load_uint(64), ds~load_uint(32), ds~load_uint(32), ds~load_coins(), ds~load_uint(1));
+    return total_amount - total_amount * ((now_time - create_at) / period) / (duration / period);
+}
+
+(int, int, int, int, int) get_lockup_data() method_id {
+    var ds = get_data().begin_parse();
+    var (stored_seqno, stored_subwallet, public_key, create_at, duration, period, total_amount, allow_elector) = (ds~load_uint(32), ds~load_uint(32), ds~load_uint(256), ds~load_uint(64), ds~load_uint(32), ds~load_uint(32), ds~load_coins(), ds~load_uint(1));
+    return (create_at, duration, period, total_amount, allow_elector);
 }
