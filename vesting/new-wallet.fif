@@ -19,6 +19,9 @@ $7 $>GR =: total_amount
 $8 parse-int =: allow_elector
 $9 "new-wallet" replace-if-null =: file-base
 
+// Do not deploy wallet in basechain which are allowed to send to elector
+wc 0 =   allow_elector * abort"Wallets in basechain can not validate"
+
 ."Creating new advanced v3 wallet in workchain " wc . cr
 ."with unique wallet id " subwallet-id . cr
 
