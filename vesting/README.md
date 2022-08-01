@@ -18,17 +18,17 @@ Install Fift Script interpretator - https://ton.org/docs/#/compile?id=fift.
 
 `wallet-id` -  use `698983191` for basechain, `698983190` for masterchain; These are common ids, although you can use others.
 
-`start_time` - unixtime of beginning of the vesting;
+`start_time` - unixtime from which all periods (vesting and cliff) are counted;
 
-`total_duration` - numbers of seconds, total duration of the vesting;
+`total_duration` - total duration of vesting in seconds;
 
-`unlock_period` - numbers of seconds, frequency of unlock of vesting coins. Unlocking will take place in equal shares of `total_amount` every `unlock_period`.
+`unlock_period` - duration of timestep of vesting unlock in seconds. Unlocking will take place in equal shares of `total_amount` every `unlock_period` (except for the initiall cliff period, see below).
 
-`cliff_duration` - numbers of seconds, the time of the initial period when the entire amount is blocked;
+`cliff_duration` - duration of initial period when the entire amount is locked in seconds;
 
-`total_amount` - in Toncoins, total amount of vesting coins;
+`total_amount` - total amount of vesting coins in Toncoins;
 
-`allow_elector` - `1` if blocked funds can be sent to the elector's contract and config, `0` if not. (If you want to participate in validation).
+`allow_elector` - `1` if blocked funds can be sent to the elector'  and config' contracts (in other words wallet may participate in validation), `0` if not.
 
 `filename-base` - the generated private key, address and message for deploying the wallet will be saved with this name.
 
@@ -49,7 +49,7 @@ You also want to be able to validate with locked coins.
 
 `cliff_duration = 31536000` - 1 year in seconds 60 * 60 * 24 * 365.
 
-`total_amount = 1000000` - 1 million Toncons.
+`total_amount = 1000000` - 1 million Toncoins.
 
 `fift -s new-wallet.fif -1 698983190 1659312000 315360000 2592000 31536000 1000000 1 my_wallet`
 
