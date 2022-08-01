@@ -12,19 +12,19 @@ Based on standard v3R2 wallet smart contract:
 
 Install Fift Script interpretator - https://ton.org/docs/#/compile?id=fift.
 
-`fift -s new-wallet.fif <workchain-id> <wallet-id> <create_at> <duration> <period> <cliff_duration> <total_amount> <allow_elector> [<filename-base>]`
+`fift -s new-wallet.fif <workchain-id> <wallet-id> <start_time> <total_duration> <unlock_period> <cliff_duration> <total_amount> <allow_elector> [<filename-base>]`
 
 `workchain-id` - `0` for basechain, `-1` for masterchain. If you want to participate in validation (`allow_elector = 1`) you must create wallet in masterchain, otherwise, you usually need to choose a basechain. 
 
 `wallet-id` -  use `698983191` for basechain, `698983190` for masterchain; These are common ids, although you can use others.
 
-`create_at` - unixtime of beginning of the vesting period;
+`start_time` - unixtime of beginning of the vesting unlock_period;
 
-`duration` - numbers of seconds, total duration of the vesting period;
+`total_duration` - numbers of seconds, total total_duration of the vesting unlock_period;
 
-`period` - numbers of seconds, frequency of unlock of vesting coins. Unlocking will take place in equal shares of `total_amount` every `period`.
+`unlock_period` - numbers of seconds, frequency of unlock of vesting coins. Unlocking will take place in equal shares of `total_amount` every `unlock_period`.
 
-`cliff_duration` - numbers of seconds, the time of the initial period when the entire amount is blocked;
+`cliff_duration` - numbers of seconds, the time of the initial unlock_period when the entire amount is blocked;
 
 `total_amount` - in Toncoins, total amount of vesting coins;
 
@@ -41,11 +41,11 @@ You also want to be able to validate with locked coins.
 
 `wallet-id = 698983190` - common wallet id for masterchain.
 
-`create_at = 1659312000` - unixtime of 1 August 2022 00:00:00 GMT.
+`start_time = 1659312000` - unixtime of 1 August 2022 00:00:00 GMT.
 
-`duration = 315360000` - 10 year in seconds. 60 * 60 * 24 * 365 * 10.
+`total_duration = 315360000` - 10 year in seconds. 60 * 60 * 24 * 365 * 10.
 
-`period = 2592000` - ~1 month in seconds. 60 * 60 * 24 * 30.
+`unlock_period = 2592000` - ~1 month in seconds. 60 * 60 * 24 * 30.
 
 `cliff_duration = 31536000` - 1 year in seconds 60 * 60 * 24 * 365.
 
@@ -77,4 +77,4 @@ Run in lite-client:
 
 `runmethod <wallet-address> get_locked_amount <unixtime>`
 
-`runmethod <wallet-address> get_lockup_data` returns `create_at, duration, period, cliff_duration, total_amount, allow_elector`
+`runmethod <wallet-address> get_lockup_data` returns `start_time, total_duration, unlock_period, cliff_duration, total_amount, allow_elector`

@@ -2,7 +2,7 @@
 "TonUtil.fif" include
 "Asm.fif" include
 
-{ ."usage: " $0 type ." <workchain-id> <wallet-id> <create_at> <duration> <period> <cliff_duration> <total_amount> <allow_elector> [<filename-base>]" cr
+{ ."usage: " $0 type ." <workchain-id> <wallet-id> <start_time> <total_duration> <unlock_period> <cliff_duration> <total_amount> <allow_elector> [<filename-base>]" cr
   ."Creates a new advanced wallet with unique 32-bit identifier <wallet-id> in specified workchain, with private key saved to or loaded from <filename-base>.pk" cr
   ."('new-wallet.pk' by default)" cr 1 halt
 } : usage
@@ -11,9 +11,9 @@ $# dup 8 < swap 9 > or ' usage if
 9 :$1..n
 $1 parse-workchain-id =: wc    // set workchain id from command line argument
 $2 parse-int =: subwallet-id
-$3 parse-int =: create_at
-$4 parse-int =: duration
-$5 parse-int =: period
+$3 parse-int =: start_time
+$4 parse-int =: total_duration
+$5 parse-int =: unlock_period
 $6 parse-int =: cliff_duration
 $7 $>GR =: total_amount
 $8 parse-int =: allow_elector
@@ -31,9 +31,9 @@ $9 "new-wallet" replace-if-null =: file-base
    file-base +".pk" load-generate-keypair
    constant wallet_pk
    B,
-   create_at 64 u,
-   duration 32 u,
-   period 32 u,
+   start_time 64 u,
+   total_duration 32 u,
+   unlock_period 32 u,
    cliff_duration 32 u,
    total_amount Gram,
    allow_elector 1 u,
