@@ -18,13 +18,13 @@ Install Fift Script interpretator - https://ton.org/docs/#/compile?id=fift.
 
 `wallet-id` -  use `698983191` for basechain, `698983190` for masterchain; These are common ids, although you can use others.
 
-`start_time` - unixtime of beginning of the vesting unlock_period;
+`start_time` - unixtime of beginning of the vesting;
 
-`total_duration` - numbers of seconds, total total_duration of the vesting unlock_period;
+`total_duration` - numbers of seconds, total duration of the vesting;
 
 `unlock_period` - numbers of seconds, frequency of unlock of vesting coins. Unlocking will take place in equal shares of `total_amount` every `unlock_period`.
 
-`cliff_duration` - numbers of seconds, the time of the initial unlock_period when the entire amount is blocked;
+`cliff_duration` - numbers of seconds, the time of the initial period when the entire amount is blocked;
 
 `total_amount` - in Toncoins, total amount of vesting coins;
 
