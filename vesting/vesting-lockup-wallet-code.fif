@@ -1,0 +1,259 @@
+"Asm.fif" include
+// automatically generated from `../stdlib.fc` `vesting-lockup-wallet.fc` 
+PROGRAM{
+  DECLPROC match_address_from_config
+  DECLPROC recv_internal
+  DECLPROC recv_external
+  85143 DECLMETHOD seqno
+  78748 DECLMETHOD get_public_key
+  120902 DECLMETHOD get_locked_amount
+  107305 DECLMETHOD get_lockup_data
+  match_address_from_config PROCREF:<{
+    //  address config_id
+    CONFIGOPTPARAM	//  address config_cell
+    DUP	//  address config_cell config_cell
+    ISNULL	//  address config_cell _4
+    IFJMP:<{	//  address config_cell
+      2DROP	// 
+      0 PUSHINT	//  _5=0
+    }>	//  address config_cell
+    CTOS	//  address config_slice
+    DUP	//  address config_slice config_slice
+    SBITS	//  address config_slice _8
+    8 PUSHPOW2	//  address config_slice _8 _9=256
+    LESS	//  address config_slice _10
+    IFJMP:<{	//  address config_slice
+      2DROP	// 
+      0 PUSHINT	//  _11=0
+    }>	//  address config_slice
+    256 PLDU	//  address addr
+    -1 PUSHINT	//  address addr _16=-1
+    4 PUSHINT	//  address addr _16=-1 _17=4
+    NEWC	//  address addr _16=-1 _17=4 _18
+    3 STU	//  address addr _16=-1 _20
+    8 STI	//  address addr _22
+    256 STU	//  address _24
+    ENDC	//  address _25
+    CTOS	//  address address_from_config
+    SDEQ	//  _27
+  }>
+  recv_internal PROC:<{
+    //  in_msg
+    DROP	// 
+  }>
+  recv_external PROC:<{
+    //  in_msg
+    9 PUSHPOW2	//  in_msg _3=512
+    LDSLICEX	//  signature in_msg
+    DUP	//  signature in_msg cs
+    32 LDU	//  signature in_msg _9 cs
+    32 LDU	//  signature in_msg _9 _12 cs
+    32 LDU	//  signature in_msg subwallet_id valid_until msg_seqno cs
+    s0 s2 XCHG
+    NOW	//  signature in_msg subwallet_id cs msg_seqno valid_until _19
+    LEQ	//  signature in_msg subwallet_id cs msg_seqno _20
+    36 THROWIF
+    c4 PUSH	//  signature in_msg subwallet_id cs msg_seqno _23
+    CTOS	//  signature in_msg subwallet_id cs msg_seqno ds
+    32 LDU	//  signature in_msg subwallet_id cs msg_seqno _34 ds
+    32 LDU	//  signature in_msg subwallet_id cs msg_seqno _34 _37 ds
+    256 LDU	//  signature in_msg subwallet_id cs msg_seqno _34 _37 _40 ds
+    64 LDU	//  signature in_msg subwallet_id cs msg_seqno _34 _37 _40 _43 ds
+    32 LDU	//  signature in_msg subwallet_id cs msg_seqno _34 _37 _40 _43 _46 ds
+    32 LDU	//  signature in_msg subwallet_id cs msg_seqno _34 _37 _40 _43 _46 _49 ds
+    32 LDU	//  signature in_msg subwallet_id cs msg_seqno _34 _37 _40 _43 _46 _49 _52 ds
+    LDVARUINT16	//  signature in_msg subwallet_id cs msg_seqno _34 _37 _40 _43 _46 _49 _52 _55 ds
+    1 LDU	//  signature in_msg subwallet_id cs msg_seqno stored_seqno stored_subwallet public_key start_time total_duration unlock_period cliff_diration total_amount allow_elector ds
+    ENDS
+    s9 s8 XCPU	//  signature in_msg subwallet_id cs allow_elector stored_seqno stored_subwallet public_key start_time total_duration unlock_period cliff_diration total_amount msg_seqno stored_seqno
+    EQUAL	//  signature in_msg subwallet_id cs allow_elector stored_seqno stored_subwallet public_key start_time total_duration unlock_period cliff_diration total_amount _62
+    33 THROWIFNOT
+    s10 s6 XCPU	//  signature in_msg total_amount cs allow_elector stored_seqno stored_subwallet public_key start_time total_duration unlock_period cliff_diration subwallet_id stored_subwallet
+    EQUAL	//  signature in_msg total_amount cs allow_elector stored_seqno stored_subwallet public_key start_time total_duration unlock_period cliff_diration _65
+    34 THROWIFNOT
+    s0 s10 XCHG	//  signature cliff_diration total_amount cs allow_elector stored_seqno stored_subwallet public_key start_time total_duration unlock_period in_msg
+    HASHSU	//  signature cliff_diration total_amount cs allow_elector stored_seqno stored_subwallet public_key start_time total_duration unlock_period _68
+    s0 s11 s4 XC2PU	//  unlock_period cliff_diration total_amount cs allow_elector stored_seqno stored_subwallet public_key start_time total_duration _68 signature public_key
+    CHKSIGNU	//  unlock_period cliff_diration total_amount cs allow_elector stored_seqno stored_subwallet public_key start_time total_duration _69
+    35 THROWIFNOT
+    s6 PUSH	//  unlock_period cliff_diration total_amount cs allow_elector stored_seqno stored_subwallet public_key start_time total_duration cs
+    SREFS	//  unlock_period cliff_diration total_amount cs allow_elector stored_seqno stored_subwallet public_key start_time total_duration refs_count
+    DUP	//  unlock_period cliff_diration total_amount cs allow_elector stored_seqno stored_subwallet public_key start_time total_duration refs_count refs_count
+    0 EQINT	//  unlock_period cliff_diration total_amount cs allow_elector stored_seqno stored_subwallet public_key start_time total_duration refs_count _74
+    IF:<{	//  unlock_period cliff_diration total_amount cs allow_elector stored_seqno stored_subwallet public_key start_time total_duration refs_count
+      DROP
+      s6 POP	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time
+      ACCEPT
+    }>ELSE<{	//  unlock_period cliff_diration total_amount cs allow_elector stored_seqno stored_subwallet public_key start_time total_duration refs_count
+      1 EQINT	//  unlock_period cliff_diration total_amount cs allow_elector stored_seqno stored_subwallet public_key start_time total_duration _78
+      37 THROWIFNOT
+      s0 s6 XCHG	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time cs
+      8 LDU	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode cs
+      OVER	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode cs mode
+      3 EQINT	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode cs _86
+      38 THROWIFNOT
+      LDREF	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode _185 _184
+      DROP	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg
+      DUP	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg msg
+      CTOS	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg msg_cs
+      4 LDU	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg _187 _186
+      NIP	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg msg_cs
+      LDMSGADDR	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg _189 _188
+      NIP	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg msg_cs
+      LDMSGADDR	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg _191 _190
+      DROP	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address
+      ACCEPT
+      NOW	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time
+      s4 s11 PUSH2	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time start_time cliff_diration
+      ADD	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time _107
+      s1 s(-1) PUXC	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time now_time _107
+      LESS	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time _108
+      IF:<{	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time
+        s10 PUSH	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time _109
+      }>ELSE<{	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time
+        s0 s4 PUSH2	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time now_time start_time
+        SUB	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time _110
+        s13 PUSH	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time _110 unlock_period
+        DIV	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time _111
+        s11 s(-1) PUXC	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time total_amount _111
+        MUL	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time _112
+        s10 s13 PUSH2	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time _112 total_duration unlock_period
+        DIV	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time _112 _113
+        DIV	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time _114
+        s11 s(-1) PUXC	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time total_amount _114
+        SUB	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time _109
+      }>	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time locked_amount
+      s5 s10 PUSH2	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time locked_amount start_time total_duration
+      ADD	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address now_time locked_amount _116
+      s1 s2 XCHG	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address locked_amount now_time _116
+      GREATER	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address locked_amount _117
+      IF:<{	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address locked_amount
+        DROP	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address
+        0 PUSHINT	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address locked_amount=0
+      }>	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address locked_amount
+      DUP	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address locked_amount locked_amount
+      0 GTINT	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address locked_amount _120
+      s9 PUSH	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address locked_amount _120 allow_elector
+      AND	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address locked_amount _121
+      s2 PUSH
+      0 PUSHINT	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address locked_amount _121 destination_address _122=0
+      match_address_from_config INLINECALLDICT	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg destination_address locked_amount _121 _123
+      s0 s3 XCHG
+      1 PUSHINT	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg _123 locked_amount _121 destination_address _124=1
+      match_address_from_config INLINECALLDICT	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg _123 locked_amount _121 _125
+      s1 s3 XCHG	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg _121 locked_amount _123 _125
+      OR	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg _121 locked_amount _126
+      s1 s2 XCHG	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg locked_amount _121 _126
+      AND	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg locked_amount _127
+      IF:<{	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg locked_amount
+        DROP	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg
+        0 PUSHINT	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg locked_amount=0
+      }>	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg locked_amount
+      DUP	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg locked_amount locked_amount
+      0 GTINT	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg locked_amount _130
+      IF:<{	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg locked_amount
+        2 PUSHINT	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg locked_amount _131=2
+        RAWRESERVE
+      }>ELSE<{
+        DROP	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time mode msg
+      }>
+      SWAP	//  unlock_period cliff_diration total_amount total_duration allow_elector stored_seqno stored_subwallet public_key start_time msg mode
+      SENDRAWMSG
+    }>
+    s0 s3 XCHG	//  unlock_period cliff_diration total_amount total_duration allow_elector start_time stored_subwallet public_key stored_seqno
+    INC	//  unlock_period cliff_diration total_amount total_duration allow_elector start_time stored_subwallet public_key _135
+    NEWC	//  unlock_period cliff_diration total_amount total_duration allow_elector start_time stored_subwallet public_key _135 _136
+    32 STU	//  unlock_period cliff_diration total_amount total_duration allow_elector start_time stored_subwallet public_key _138
+    s1 s2 XCHG	//  unlock_period cliff_diration total_amount total_duration allow_elector start_time public_key stored_subwallet _138
+    32 STU	//  unlock_period cliff_diration total_amount total_duration allow_elector start_time public_key _140
+    256 STU	//  unlock_period cliff_diration total_amount total_duration allow_elector start_time _142
+    64 STU	//  unlock_period cliff_diration total_amount total_duration allow_elector _144
+    s1 s2 XCHG	//  unlock_period cliff_diration total_amount allow_elector total_duration _144
+    32 STU	//  unlock_period cliff_diration total_amount allow_elector _146
+    s1 s4 XCHG	//  allow_elector cliff_diration total_amount unlock_period _146
+    32 STU	//  allow_elector cliff_diration total_amount _148
+    s1 s2 XCHG	//  allow_elector total_amount cliff_diration _148
+    32 STU	//  allow_elector total_amount _150
+    SWAP	//  allow_elector _150 total_amount
+    STVARUINT16	//  allow_elector _151
+    1 STU	//  _153
+    ENDC	//  _154
+    c4 POP
+  }>
+  seqno PROC:<{
+    // 
+    c4 PUSH	//  _0
+    CTOS	//  _1
+    32 PLDU	//  _3
+  }>
+  get_public_key PROC:<{
+    // 
+    c4 PUSH	//  _1
+    CTOS	//  cs
+    64 LDU	//  _9 _8
+    NIP	//  cs
+    256 PLDU	//  _7
+  }>
+  get_locked_amount PROC:<{
+    //  now_time
+    c4 PUSH	//  now_time _2
+    CTOS	//  now_time ds
+    32 LDU	//  now_time _53 _52
+    NIP	//  now_time ds
+    32 LDU	//  now_time _55 _54
+    NIP	//  now_time ds
+    256 LDU	//  now_time _57 _56
+    NIP	//  now_time ds
+    64 LDU	//  now_time _22 ds
+    32 LDU	//  now_time _22 _25 ds
+    32 LDU	//  now_time _22 _25 _28 ds
+    32 LDU	//  now_time _22 _25 _28 _31 ds
+    LDVARUINT16	//  now_time _22 _25 _28 _31 _67 _66
+    DROP	//  now_time start_time total_duration unlock_period cliff_diration total_amount
+    s4 s1 PUXC	//  now_time start_time total_duration unlock_period total_amount start_time cliff_diration
+    ADD	//  now_time start_time total_duration unlock_period total_amount _40
+    s5 s(-1) PUXC	//  now_time start_time total_duration unlock_period total_amount now_time _40
+    LESS	//  now_time start_time total_duration unlock_period total_amount _41
+    IF:<{	//  now_time start_time total_duration unlock_period total_amount
+      NIP	//  now_time start_time total_duration _42
+    }>ELSE<{	//  now_time start_time total_duration unlock_period total_amount
+      s4 s3 PUSH2	//  now_time start_time total_duration unlock_period total_amount now_time start_time
+      SUB	//  now_time start_time total_duration unlock_period total_amount _43
+      s2 PUSH	//  now_time start_time total_duration unlock_period total_amount _43 unlock_period
+      DIV	//  now_time start_time total_duration unlock_period total_amount _44
+      s1 s(-1) PUXC	//  now_time start_time total_duration unlock_period total_amount total_amount _44
+      MUL	//  now_time start_time total_duration unlock_period total_amount _45
+      s3 s2 PUXC	//  now_time start_time total_duration _45 total_amount total_duration unlock_period
+      DIV	//  now_time start_time total_duration _45 total_amount _46
+      s1 s2 XCHG	//  now_time start_time total_duration total_amount _45 _46
+      DIV	//  now_time start_time total_duration total_amount _47
+      SUB	//  now_time start_time total_duration _42
+    }>	//  now_time start_time total_duration locked_amount
+    -ROT	//  now_time locked_amount start_time total_duration
+    ADD	//  now_time locked_amount _49
+    s1 s2 XCHG	//  locked_amount now_time _49
+    GREATER	//  locked_amount _50
+    IF:<{	//  locked_amount
+      DROP	// 
+      0 PUSHINT	//  locked_amount=0
+    }>	//  locked_amount
+  }>
+  get_lockup_data PROC:<{
+    // 
+    c4 PUSH	//  _1
+    CTOS	//  ds
+    32 LDU	//  _39 _38
+    NIP	//  ds
+    32 LDU	//  _41 _40
+    NIP	//  ds
+    256 LDU	//  _43 _42
+    NIP	//  ds
+    64 LDU	//  _21 ds
+    32 LDU	//  _21 _24 ds
+    32 LDU	//  _21 _24 _27 ds
+    32 LDU	//  _21 _24 _27 _30 ds
+    LDVARUINT16	//  _21 _24 _27 _30 _33 ds
+    1 LDU	//  _21 _24 _27 _30 _33 _55 _54
+    DROP	//  start_time total_duration unlock_period cliff_diration total_amount allow_elector
+  }>
+}END>c

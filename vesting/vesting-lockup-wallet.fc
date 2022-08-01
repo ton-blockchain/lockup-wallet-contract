@@ -1,0 +1,110 @@
+int equal_slices(slice a, slice b) asm "SDEQ";
+
+int match_address_from_config(slice address, int config_id) inline_ref {
+    cell config_cell = config_param(config_id);
+    if (cell_null?(config_cell)) {
+        return 0;
+    }
+    slice config_slice = config_cell.begin_parse();
+    if (config_slice.slice_bits() < 256) {
+        return 0;
+    }
+    int addr = config_slice.preload_uint(256);
+    slice address_from_config = begin_cell()
+            .store_uint(4, 3)
+            .store_int(-1, 8) ;; masterchain
+            .store_uint(addr, 256)
+            .end_cell()
+            .begin_parse();
+    return equal_slices(address, address_from_config);
+}
+
+() recv_internal(slice in_msg) impure {
+    ;; do nothing for internal messages
+}
+
+() recv_external(slice in_msg) impure {
+    var signature = in_msg~load_bits(512);
+    var cs = in_msg;
+    var (subwallet_id, valid_until, msg_seqno) = (cs~load_uint(32), cs~load_uint(32), cs~load_uint(32));
+    throw_if(36, valid_until <= now());
+    var ds = get_data().begin_parse();
+    var (stored_seqno, stored_subwallet, public_key, start_time, total_duration, unlock_period, cliff_diration, total_amount, allow_elector) = (ds~load_uint(32), ds~load_uint(32), ds~load_uint(256), ds~load_uint(64), ds~load_uint(32), ds~load_uint(32), ds~load_uint(32), ds~load_coins(), ds~load_uint(1));
+    ds.end_parse();
+    throw_unless(33, msg_seqno == stored_seqno);
+    throw_unless(34, subwallet_id == stored_subwallet);
+    throw_unless(35, check_signature(slice_hash(in_msg), signature, public_key));
+
+    int refs_count = slice_refs(cs);
+    if (refs_count == 0) {
+        accept_message();
+    } else {
+        throw_unless(37, refs_count == 1);
+        var mode = cs~load_uint(8);
+        throw_unless(38, mode == 3);
+
+        cell msg = cs~load_ref();
+        slice msg_cs = msg.begin_parse();
+        int flags = msg_cs~load_uint(4); ;; skip
+        slice sender_address = msg_cs~load_msg_addr(); ;; skip
+        slice destination_address = msg_cs~load_msg_addr();
+
+        accept_message();
+
+        int now_time = now();
+        int locked_amount = (now_time < start_time + cliff_diration) ? total_amount : (total_amount - total_amount * ((now_time - start_time) / unlock_period) / (total_duration / unlock_period));
+        if (now_time > start_time + total_duration) {
+            locked_amount = 0;
+        }
+
+        if ((locked_amount > 0) & allow_elector & (match_address_from_config(destination_address, 0) | match_address_from_config(destination_address, 1))) {
+            locked_amount = 0;
+        }
+
+        if (locked_amount > 0) {
+            raw_reserve(locked_amount, 2); ;; mode 2 - at most `amount` nanotons. Bit +2 in y means that the external action does not fail if the specified amount cannot be reserved; instead, all remaining balance is reserved
+        }
+
+        send_raw_message(msg, mode);
+    }
+
+    set_data(begin_cell()
+            .store_uint(stored_seqno + 1, 32)
+            .store_uint(stored_subwallet, 32)
+            .store_uint(public_key, 256)
+            .store_uint(start_time, 64)
+            .store_uint(total_duration, 32)
+            .store_uint(unlock_period, 32)
+            .store_uint(cliff_diration, 32)
+            .store_coins(total_amount)
+            .store_uint(allow_elector, 1)
+            .end_cell());
+}
+
+;; Get methods
+
+int seqno() method_id {
+    return get_data().begin_parse().preload_uint(32);
+}
+
+int get_public_key() method_id {
+    var cs = get_data().begin_parse();
+    cs~load_uint(64);
+    return cs.preload_uint(256);
+}
+
+int get_locked_amount(int now_time) method_id {
+    var ds = get_data().begin_parse();
+    var (stored_seqno, stored_subwallet, public_key, start_time, total_duration, unlock_period, cliff_diration, total_amount, allow_elector) = (ds~load_uint(32), ds~load_uint(32), ds~load_uint(256), ds~load_uint(64), ds~load_uint(32), ds~load_uint(32), ds~load_uint(32), ds~load_coins(), ds~load_uint(1));
+    int locked_amount = (now_time < start_time + cliff_diration) ? total_amount : (total_amount - total_amount * ((now_time - start_time) / unlock_period) / (total_duration / unlock_period));
+    if (now_time > start_time + total_duration) {
+        locked_amount = 0;
+    }
+    return locked_amount;
+}
+
+(int, int, int, int, int, int) get_lockup_data() method_id {
+    var ds = get_data().begin_parse();
+    var (stored_seqno, stored_subwallet, public_key, start_time, total_duration, unlock_period, cliff_diration, total_amount, allow_elector) = (ds~load_uint(32), ds~load_uint(32), ds~load_uint(256), ds~load_uint(64), ds~load_uint(32), ds~load_uint(32), ds~load_uint(32), ds~load_coins(), ds~load_uint(1));
+    return (start_time, total_duration, unlock_period, cliff_diration, total_amount, allow_elector);
+}

@@ -1,0 +1,8 @@
+#!/usr/bin/fift -s
+"TonUtil.fif" include
+"Asm.fif" include
+
+."vesting-lockup-wallet:" cr
+
+"vesting-lockup-wallet-code.fif" include
+2 boc+>B dup Bx. cr
