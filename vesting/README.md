@@ -43,15 +43,15 @@ You also want to be able to validate with locked coins.
 
 `start_time = 1659312000` - unixtime of 1 August 2022 00:00:00 GMT.
 
-`total_duration = 315360000` - 10 year in seconds. 60 * 60 * 24 * 365 * 10.
+`total_duration = 311040000` - ~10 year in seconds. 60 * 60 * 24 * 30 * 12 * 10.
 
 `unlock_period = 2592000` - ~1 month in seconds. 60 * 60 * 24 * 30.
 
-`cliff_duration = 31536000` - 1 year in seconds 60 * 60 * 24 * 365.
+`cliff_duration = 31104000` - ~1 year in seconds 60 * 60 * 24 * 30 * 12.
 
 `total_amount = 1000000` - 1 million Toncoins.
 
-`fift -s new-wallet.fif -1 698983190 1659312000 315360000 2592000 31536000 1000000 1 my_wallet`
+`fift -s new-wallet.fif -1 698983190 1659312000 311040000 2592000 31104000 1000000 1 my_wallet`
 
 ## Create transfer message
 

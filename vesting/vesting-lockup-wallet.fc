@@ -52,7 +52,7 @@ int match_address_from_config(slice address, int config_id) inline_ref {
         accept_message();
 
         int now_time = now();
-        int locked_amount = (now_time < start_time + cliff_diration) ? total_amount : (total_amount - total_amount * ((now() - start_time) / unlock_period) / (total_duration / unlock_period));
+        int locked_amount = (now_time < start_time + cliff_diration) ? total_amount : (total_amount - total_amount * ((now_time - start_time) / unlock_period) / (total_duration / unlock_period));
         if (now_time > start_time + total_duration) {
             locked_amount = 0;
         }
@@ -96,7 +96,7 @@ int get_public_key() method_id {
 int get_locked_amount(int now_time) method_id {
     var ds = get_data().begin_parse();
     var (stored_seqno, stored_subwallet, public_key, start_time, total_duration, unlock_period, cliff_diration, total_amount, allow_elector) = (ds~load_uint(32), ds~load_uint(32), ds~load_uint(256), ds~load_uint(64), ds~load_uint(32), ds~load_uint(32), ds~load_uint(32), ds~load_coins(), ds~load_uint(1));
-    int locked_amount = (now_time < start_time + cliff_diration) ? total_amount : (total_amount - total_amount * ((now() - start_time) / unlock_period) / (total_duration / unlock_period));
+    int locked_amount = (now_time < start_time + cliff_diration) ? total_amount : (total_amount - total_amount * ((now_time - start_time) / unlock_period) / (total_duration / unlock_period));
     if (now_time > start_time + total_duration) {
         locked_amount = 0;
     }
