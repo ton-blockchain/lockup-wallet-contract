@@ -12,6 +12,8 @@ Based on standard v3R2 wallet smart contract:
 
 Install Fift Script interpretator - https://ton.org/docs/#/compile?id=fift.
 
+Go to `lockup-wallet-contract/vesting` folder and run:
+
 `fift -s new-wallet.fif <workchain-id> <wallet-id> <start_time> <total_duration> <unlock_period> <cliff_duration> <total_amount> <allow_elector> [<filename-base>]`
 
 `workchain-id` - `0` for basechain, `-1` for masterchain. If you want to participate in validation (`allow_elector = 1`) you must create wallet in masterchain, otherwise, you usually need to choose a basechain. 
@@ -64,11 +66,19 @@ You also want to be able to validate with locked coins.
 
 `fift -s new-wallet.fif -1 698983190 1659312000 311040000 2592000 31104000 1000000 1 my_wallet`
 
-Next you transfer `my_wallet-query.boc` to machine with Internet connection and send it via [lite-client](https://ton.org/docs/#/compile?id=lite-client).
+Next you transfer `my_wallet-query.boc` to machine with Internet connection, send 1 ton to the wallet address (for gas) and send query via [lite-client](https://ton.org/docs/#/compile?id=lite-client).
 
 `> sendfile /path/to/file/my_wallet-query.boc`
 
+After that, make sure that the wallet was created on the network and send vesting coins to it. Coins can be sent from any wallets, all at once or in multiple transfers.
+
+The actual number of coins may be less than or greater than the `total_amount`. In this case, the unlock speed will still correspond to the original wallet parameters.
+
+After the `total_duration`, all funds will become available.
+
 ## Create transfer message
+
+Go to `lockup-wallet-contract/vesting` folder and run:
 
 `fift -s wallet.fif <filename-base> <dest-addr> <subwallet-id> <seqno> <amount> [-n|-b] [-t<timeout>] [-B <body-boc>] [-C <comment>] [<savefile>]`
 
@@ -76,7 +86,7 @@ The script does not require an internet connection and can be used on a separate
 
 By default, the lifetime of transfer message is 60 seconds. You can increase it with a flag `-t`.
 
-You need to pass actual wallet's `seqno` parameter, which can be obtained through the lite-client:
+You need to pass actual wallet's `seqno` parameter (count of processed messages by wallet, sequential number), which can be obtained through the lite-client:
 
 `runmethod <wallet-address> seqno`
 
@@ -104,9 +114,9 @@ Install lite-client `https://ton.org/docs/#/compile?id=lite-client`
 
 Run in lite-client:
 
-`runmethod <wallet-address> seqno`
+`runmethod <wallet-address> seqno` - obtain current `seqno` of wallet.
 
-`runmethod <wallet-address> get_public_key`
+`runmethod <wallet-address> get_public_key` - obtain wallet public key.
 
 `runmethod <wallet-address> get_locked_amount <unixtime>` - the amount of locked coins at a given moment.
 
