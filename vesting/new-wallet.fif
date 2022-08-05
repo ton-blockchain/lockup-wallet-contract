@@ -39,7 +39,7 @@ wc 0 =   allow_elector * abort"Wallets in basechain can not validate"
    unlock_period 32 u,
    cliff_duration 32 u,
    total_amount Gram,
-   allow_elector 1 u,
+   allow_elector 1 i,
 b> // data
 null // no libraries
 <b b{0011} s, 3 roll ref, rot ref, swap dict, b>  // create StateInit
