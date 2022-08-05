@@ -21,11 +21,11 @@ int match_address_from_config(slice address, int config_id) inline_ref {
     return equal_slices(address, address_from_config);
 }
 
-() recv_internal(slice in_msg) impure {
+() recv_internal(slice in_msg) {
     ;; do nothing for internal messages
 }
 
-() recv_external(slice in_msg) impure {
+() recv_external(slice in_msg) {
     var signature = in_msg~load_bits(512);
     var cs = in_msg;
     var (subwallet_id, valid_until, msg_seqno) = (cs~load_uint(32), cs~load_uint(32), cs~load_uint(32));
