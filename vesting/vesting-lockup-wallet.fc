@@ -1,4 +1,6 @@
 int equal_slices(slice a, slice b) asm "SDEQ";
+(slice, int) ~load_bool(slice s) asm( -> 1 0) "1 LDI";
+builder store_bool(builder b, int x) asm(x b) "1 STI";
 
 int match_address_from_config(slice address, int config_id) inline_ref {
     cell config_cell = config_param(config_id);
@@ -29,7 +31,7 @@ int match_address_from_config(slice address, int config_id) inline_ref {
     var (subwallet_id, valid_until, msg_seqno) = (cs~load_uint(32), cs~load_uint(32), cs~load_uint(32));
     throw_if(36, valid_until <= now());
     var ds = get_data().begin_parse();
-    var (stored_seqno, stored_subwallet, public_key, start_time, total_duration, unlock_period, cliff_diration, total_amount, allow_elector) = (ds~load_uint(32), ds~load_uint(32), ds~load_uint(256), ds~load_uint(64), ds~load_uint(32), ds~load_uint(32), ds~load_uint(32), ds~load_coins(), ds~load_uint(1));
+    var (stored_seqno, stored_subwallet, public_key, start_time, total_duration, unlock_period, cliff_diration, total_amount, allow_elector) = (ds~load_uint(32), ds~load_uint(32), ds~load_uint(256), ds~load_uint(64), ds~load_uint(32), ds~load_uint(32), ds~load_uint(32), ds~load_coins(), ds~load_bool());
     ds.end_parse();
     throw_unless(33, msg_seqno == stored_seqno);
     throw_unless(34, subwallet_id == stored_subwallet);
@@ -77,7 +79,7 @@ int match_address_from_config(slice address, int config_id) inline_ref {
             .store_uint(unlock_period, 32)
             .store_uint(cliff_diration, 32)
             .store_coins(total_amount)
-            .store_uint(allow_elector, 1)
+            .store_bool(allow_elector)
             .end_cell());
 }
 
