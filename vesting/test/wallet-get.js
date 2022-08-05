@@ -38,7 +38,7 @@ const storage = ({}) => {
         "uint32", 2592000, // unlock_period
         "uint32", 31104000, // cliff_duration
         "coins", 1000000 * TON, // total_amount
-        "uint1", 1 // allow_elector
+        "int1", -1 // allow_elector
     ];
 }
 
@@ -79,7 +79,7 @@ funcer({'logVmOps': false, 'logFiftCode': false}, {
                 ["int", 2592000],
                 ["int", 31104000],
                 ["int", 1000000 * TON],
-                ["int", 1],
+                ["int", -1],
             ]
         },
         {
