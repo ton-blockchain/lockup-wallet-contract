@@ -16,7 +16,7 @@ Go to `lockup-wallet-contract/vesting` folder and run:
 
 `fift -s new-wallet.fif <workchain-id> <wallet-id> <start_time> <total_duration> <unlock_period> <cliff_duration> <total_amount> <allow_elector> [<filename-base>]`
 
-`workchain-id` - `0` for basechain, `-1` for masterchain. If you want to participate in validation (`allow_elector = 1`) you must create wallet in masterchain, otherwise, you usually need to choose a basechain. 
+`workchain-id` - `0` for basechain, `-1` for masterchain. If you want to participate in validation (`allow_elector = -1`) you must create wallet in masterchain, otherwise, you usually need to choose a basechain. 
 
 `wallet-id` -  use `698983191` for basechain, `698983190` for masterchain; These are common wallets ids, although you can use others.
 
@@ -30,7 +30,7 @@ Go to `lockup-wallet-contract/vesting` folder and run:
 
 `total_amount` - total amount of vesting coins in Toncoins;
 
-`allow_elector` - `1` if locked funds can be sent to the elector'  and config' contracts (in other words wallet may participate in validation), `0` if not.
+`allow_elector` - `-1` if locked funds can be sent to the elector'  and config' contracts (in other words wallet may participate in validation), `0` if not.
 
 `filename-base` - the generated private key, address and message for deploying the wallet will be saved with this name.
 
@@ -50,7 +50,7 @@ You want to create vesting wallet at 1 August 2022 00:00:00 GMT with total vesti
 This means that in the first year no transfers can be made, and in the 13th month it will be possible to withdraw (1'000'000 * 13 / 120 = ~ 108 333 TON), in 14th month - 116666 and so on. 
 You also want to be able to validate with locked coins.
 
-`workchain-id = -1` and `allow_elector = 1` because you want to validate.
+`workchain-id = -1` and `allow_elector = -1` because you want to validate.
 
 `wallet-id = 698983190` - common wallet id for masterchain.
 
