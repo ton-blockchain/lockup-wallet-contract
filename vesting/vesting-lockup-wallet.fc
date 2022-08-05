@@ -42,6 +42,9 @@ int match_address_from_config(slice address, int config_id) inline_ref {
         accept_message();
     } else {
         throw_unless(37, refs_count == 1);
+        ;; We enforce "ignore errors" mode to prevent balance exhaustion 
+        ;; due to incorrect message replay
+        ;; see https://ton.org/docs/#/smart-contracts/accept?id=external-messages
         var mode = cs~load_uint(8);
         throw_unless(38, mode == 3);
 
