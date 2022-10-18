@@ -121,3 +121,17 @@ Run in lite-client:
 `runmethod <wallet-address> get_locked_amount <unixtime>` - the amount of locked coins at a given moment.
 
 `runmethod <wallet-address> get_lockup_data` returns `start_time, total_duration, unlock_period, cliff_duration, total_amount, allow_elector` - the description of these parameters was made above.
+
+## Import wallet to [mytonctrl](https://github.com/ton-blockchain/mytonctrl)
+
+1. [Create and deploy](https://github.com/ton-blockchain/lockup-wallet-contract/tree/main/vesting#create-wallet) wallet via script. 
+
+    Note, to be able to validate you need create wallet in `workchain-id = -1` with `wallet-id = 698983190`.
+
+2. Copy wallet' `.addr` and `.pk` files to `~/.local/share/mytoncore/wallets/` note that files should have the same name, for instance `1.pk` and `1.addr`.
+
+3. Open mytonctrl console, check that `wl` command shows your new wallet in the list.
+
+4. Execute command `swv <wallet-addr> v3`.
+
+5. Set wallet as validator `set validatorWalletName <wallet-name>`.
