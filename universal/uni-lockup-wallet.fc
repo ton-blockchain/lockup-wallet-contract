@@ -165,7 +165,7 @@ locked, int total_restricted_value, cell restricted) {
   while (cs.slice_refs()) {
     var mode = cs~load_uint(8);
     var msg = cs~load_ref();
-    if(effectively_locked > 0) {
+    if( (total_locked_value + total_restricted_value) > 0) {
       mode = (mode & 3) | 2;
     }
     send_raw_message(msg, mode);
