@@ -164,6 +164,9 @@ locked, int total_restricted_value, cell restricted) {
   cs~touch();
   while (cs.slice_refs()) {
     var mode = cs~load_uint(8);
+    if (mode != 2) {
+       mode = 3;
+    }
     var msg = cs~load_ref();
     send_raw_message(msg, mode);
   }
