@@ -46,7 +46,7 @@ As a result the script will do the following:
 
 Example: 
 
-You want to create vesting wallet at 1 August 2022 00:00:00 GMT with total vesting amount of million Toncoins for 10 years, the amount will unlock in equal parts every month (1'000'000 TON / 120 month = ~ 8333 TON will unlock every mouth), first year everything is blocked.
+You want to create vesting wallet at 1 August 2022 00:00:00 GMT with total vesting amount of million Toncoins for 10 years, the amount will unlock in equal parts every month (1'000'000 TON / 120 month = ~ 8333 TON will unlock every month), first year everything is blocked.
 This means that in the first year no transfers can be made, and in the 13th month it will be possible to withdraw (1'000'000 * 13 / 120 = ~ 108 333 TON), in 14th month - 116666 and so on. 
 You also want to be able to validate with locked coins.
 
