@@ -10,7 +10,7 @@ Based on standard v3R2 wallet smart contract:
 
 ## Create wallet
 
-Install Fift Script interpretator - https://ton.org/docs/#/compile?id=fift.
+Install Fift Script interpreter - https://ton.org/docs/#/compile?id=fift.
 
 Go to `lockup-wallet-contract/vesting` folder and run:
 
@@ -40,13 +40,13 @@ As a result the script will do the following:
 
 1) If private key file `<filename-base>.pk` is located in the script folder - he will use it. Otherwise, the script will generate a new private key and save it in a folder in the file named `<filename-base>.pk`
 
-2) The script will print the wallet address to the console, and also save it to the file `<filname-base>.addr`.
+2) The script will print the wallet address to the console, and also save it to the file `<filename-base>.addr`.
 
 3) The script will create wallet deployment message and save it to the file `<filename-base>-query.boc`. You can send this file to network via lite-client `sendfile` command - this will deploy your wallet to the network. This message has no timeout.
 
 Example: 
 
-You want to create vesting wallet at 1 August 2022 00:00:00 GMT with total vesting amount of million Toncoins for 10 years, the amount will unlock in equal parts every month (1'000'000 TON / 120 month = ~ 8333 TON will unlock every mouth), first year everything is blocked.
+You want to create vesting wallet at 1 August 2022 00:00:00 GMT with total vesting amount of million Toncoins for 10 years, the amount will unlock in equal parts every month (1'000'000 TON / 120 month = ~ 8333 TON will unlock every month), first year everything is blocked.
 This means that in the first year no transfers can be made, and in the 13th month it will be possible to withdraw (1'000'000 * 13 / 120 = ~ 108 333 TON), in 14th month - 116666 and so on. 
 You also want to be able to validate with locked coins.
 
